@@ -4,7 +4,7 @@
 #include <cassert>
 #include <iostream>
 
-#include "MatrixExpression.h"
+#include "MatrixExpression.hpp"
 
 namespace linalg {
 

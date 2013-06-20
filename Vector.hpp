@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include "MatrixExpression.h"
+#include "MatrixExpression.hpp"
 
 namespace linalg {
 

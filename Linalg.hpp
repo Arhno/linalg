@@ -3,8 +3,8 @@
 
 #include <cassert>
 
-#include "MatrixExpression.h"
-#include "Matrix.h"
+#include "MatrixExpression.hpp"
+#include "Matrix.hpp"
 
 namespace linalg {
 
