@@ -16,8 +16,8 @@ namespace linalg {
 		int nbCols(void) const { return static_cast<E const&>(*this).nbCols(); }
 		const T operator()(int row, int col) const { return static_cast<E const&>(*this)(row,col); }
 
-		MatrixTranspose<T,E> const t(void) {
-		   return MatrixTranspose<T,E>(static_cast<E&>(*this));
+		MatrixTranspose<T,E> const t(void) const {
+		   return MatrixTranspose<T,E>(static_cast<const E&>(*this));
 		}
  
 		operator E&()             { return static_cast<      E&>(*this); }
@@ -181,32 +181,32 @@ namespace linalg {
 	 * Overload of the arithmetical operators to agregate MatixExpression's
 	 */
 	template <class T, class E1, class E2>
-	MatrixPlus<T,E1,E2> const operator+(MatrixExpression<E1,T> const& left, MatrixExpression<E2,T> const& right) {
+	MatrixPlus<T,E1,E2> const operator+(const MatrixExpression<E1,T>& left, const MatrixExpression<E2,T>& right) {
 	   return MatrixPlus<T,E1,E2>(left,right);
 	}
 
 	template <class T, class E1, class E2>
-	MatrixMinus<T,E1,E2> const operator-(MatrixExpression<E1,T> const& left, MatrixExpression<E2,T> const& right) {
+	MatrixMinus<T,E1,E2> const operator-(const MatrixExpression<E1,T>& left, const MatrixExpression<E2,T>& right) {
 	   return MatrixMinus<T,E1,E2>(left,right);
 	}
 
 	template <class T, class E1, class E2>
-	MatrixTimes<T,E1,E2> const operator*(MatrixExpression<E1,T> const& left, MatrixExpression<E2,T> const& right) {
+	MatrixTimes<T,E1,E2> const operator*(const MatrixExpression<E1,T>& left, const MatrixExpression<E2,T>& right) {
 	   return MatrixTimes<T,E1,E2>(left,right);
 	}
 
 	template <class T, class E>
-	MatrixScale<T,E> const operator*(T const& scale, MatrixExpression<E,T> const& op) {
+	MatrixScale<T,E> const operator*(const T& scale, const MatrixExpression<E,T>& op) {
 	   return MatrixScale<T,E>(scale,op);
 	}
 
 	template <class T, class E>
-	MatrixScale<T,E> const operator*(MatrixExpression<E,T> const& op, T const& scale) {
+	MatrixScale<T,E> const operator*(const MatrixExpression<E,T>& op, const T& scale) {
 	   return MatrixScale<T,E>(scale,op);
 	}
 
 	template <class T, class E>
-	void print(MatrixExpression<E,T> const& me, std::ostream& os = std::cout){
+	void print(const MatrixExpression<E,T>& me, std::ostream& os = std::cout){
 		for(int i=0 ; i<me.nbRows() ; ++i){
 			for(int j=0 ; j<me.nbCols() ; ++j)
 				os << me(i,j) << " " ;
