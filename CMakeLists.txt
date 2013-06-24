@@ -2,15 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(LinearAlgebra)
 
-file(
-
-        GLOB_RECURSE
-
-        header_files
-
-        include/*
-
-)
+set(EXECUTABLE_OUTPUT_PATH bin)
 
 file(
 
@@ -26,7 +18,6 @@ add_executable(
 
         test
 	
-	${header_files}
         ${source_files}
 
 )

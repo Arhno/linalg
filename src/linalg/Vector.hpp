@@ -41,15 +41,6 @@ namespace linalg {
 				values_[i] = values[i] ;
 		}
 
-		/*Vector(const Matrix<T>& m)
-			: nbRows_(m.nbRows())
-			  values_(new T[m.nbRows()])
-		{
-			assert(m.nbCols() == 1) ;
-			for(int i=0 ; i<nbRows_ ; ++i)
-				values_[i] = m(i,0) ;
-		}*/
-
 		Vector(const Matrix<T>&& m)
 			: nbRows_(m.nbRows_)
 		{
@@ -78,29 +69,20 @@ namespace linalg {
 		~Vector(void){
 			delete[] (values_) ;
 		}
-		
+
 		int nbRows(void) const { return nbRows_; }
 		int nbCols(void) const { return 1; }
 
 		template <typename E>
 		void operator=(const MatrixExpression<E,T>& me) {
-			/*assert(me.nbCols() == 1) ;
-			delete[] (values_) ;
-			
-			nbRows_ = me.nbRows() ;
-			
-			values_ = new T[nbRows_] ;
-
-			for(int i=0 ; i<nbRows_ ; ++i)
-				values_[i] = me(i,0) ;*/
 			*this = Vector<T>(me) ;
 		}
 
 		void operator=(const Vector& v) {
 			delete[] (values_) ;
-			
+
 			nbRows_ = v.nbRows_ ;
-			
+
 			values_ = new T[nbRows_] ;
 
 			for(int i=0 ; i<nbRows_ ; ++i)
@@ -109,9 +91,9 @@ namespace linalg {
 
 		void operator=(Vector&& v) {
 			delete[] (values_) ;
-			
+
 			nbRows_ = v.nbRows_ ;
-			values_ = v.values_ ; 
+			values_ = v.values_ ;
 
 			v.values_ = nullptr ;
 		}
@@ -119,22 +101,46 @@ namespace linalg {
 		void operator=(const Matrix<T>& m) {
 			assert(m.nbCols_ == 1) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = m.nbRows_ ;
-			
+
 			values_ = new T[nbRows_] ;
 
 			for(int i=0 ; i<nbRows_ ; ++i)
-				values_[i] = m(i,1) ;
+				values_[i] = m(i,0) ;
 		}
 
 		void operator=(Matrix<T>&& m) {
 			assert(m.nbCols_ == 1) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = m.nbRows_ ;
-			values_ = *(v.values_) ;
-			*(v.values_) = nullptr ;
+			values_ = *(m.values_) ;
+			*(m.values_) = nullptr ;
+		}
+
+		Vector& operator+=(const Vector& v) {
+		    assert(nbRows_ == v.nbRows()) ;
+		    for(int i=0 ; i<nbRows_ ; ++i)
+                values_[i] += v[i] ;
+			return *this ;
+		}
+
+		template <typename E>
+		Vector& operator+=(const MatrixExpression<E,T>& me) {
+			return *this += Vector<T>(me) ;
+		}
+
+		Vector& operator-=(const Vector& v) {
+		    assert(nbRows_ == v.nbRows()) ;
+		    for(int i=0 ; i<nbRows_ ; ++i)
+                values_[i] -= v[i] ;
+			return *this ;
+		}
+
+		template <typename E>
+		Vector& operator-=(const MatrixExpression<E,T>& me) {
+			return *this -= Vector<T>(me) ;
 		}
 
 		const T operator()(int row, int col) const {

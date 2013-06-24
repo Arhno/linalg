@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "Linalg.hpp"
-#include "Matrix.hpp"
-#include "Vector.hpp"
+#include "linalg/Linalg.hpp"
+#include "linalg/Matrix.hpp"
+#include "linalg/Vector.hpp"
 
 int main(int argc, char* argv[]){
 	double values[] = {1.0, 2.0, 3.0} ;
@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
 	linalg::print(2.0 * X.t() * X) ;
 	linalg::print(2.0 * X * X.t()) ;
 
-	linalg::Matrix<double> B(X*X.t()) ;
+    linalg::Matrix<double> B(X*X.t()) ;
 	linalg::print(B) ;
 
 	linalg::Matrix<double> M(3,3) ;
@@ -21,16 +21,19 @@ int main(int argc, char* argv[]){
 
 	linalg::print(linalg::MeanSquareSolve(M,2.0*X)) ;
 
-	double Avalues[] = {1,2,3,4,5,6,7,8,9} ;
+	double Avalues[] = {0.5,0,0,0,0.5,0,0,0,0.5} ;
 	linalg::Matrix<double> A(3,3,Avalues) ;
 	linalg::print(A) ;
 
 	linalg::Matrix<double> Id(3,3) ;
 	Id(0,0) = Id(1,1) = Id(2,2) = 1.0 ;
 	linalg::print(Id) ;
-	
+
 	linalg::print(linalg::solve(A,Id)) ;
 	linalg::print(linalg::solve(A,Id)*A) ;
 	linalg::print(A*linalg::solve(A,Id)) ;
+
+
+	linalg::print(A += 2.0 * X * X.t()) ;
 	return 0 ;
 }

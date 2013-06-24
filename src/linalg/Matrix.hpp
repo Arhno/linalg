@@ -43,23 +43,6 @@ namespace linalg {
 						values_[i][j] = values[i*nbCols_+j] ;
 		}
 
-		/*Matrix(const Matrix& m)
-			: nbRows_(m.nbRows_),
-			  nbCols_(m.nbCols_),
-			  values_(new T*[m.nbRows_])
-		{
-			int size = nbRows_*nbCols_ ;
-			*values_ = new T[size] ;
-			
-			for(int i=1 ; i<nbRows_ ; ++i){
-				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
-			}
-
-			for(int i=0 ; i<nbRows_ ; ++i)
-				for(int j=0 ; j<nbCols_ ; ++j)
-					values_[i][j] = m.values_[i][j] ;
-		}*/
-
 		Matrix(Matrix&& m)
 			: nbRows_(m.nbRows_),
 			  nbCols_(m.nbCols_),
@@ -88,7 +71,7 @@ namespace linalg {
 		{
 			int size = nbRows_*nbCols_ ;
 			*values_ = new T[size] ;
-			
+
 			for(int i=1 ; i<nbRows_ ; ++i){
 				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
 			}
@@ -103,55 +86,13 @@ namespace linalg {
 				delete[] (*values_) ;
 			delete[] (values_) ;
 		}
-		
+
 		int nbRows(void) const { return nbRows_; }
 		int nbCols(void) const { return nbCols_; }
-
-		/*void operator=(const Matrix& m) {
-			if(values_ != nullptr)
-				delete[] (*values_) ;
-			delete[] (values_) ;
-			
-			nbRows_ = m.nbRows_ ;
-			nbCols_ = m.nbCols_ ;
-			
-			values_ = new T*[nbRows_] ; 
-			
-			int size = nbRows_*nbCols_ ;
-			*values_ = new T[size] ;
-			
-			for(int i=1 ; i<nbRows_ ; ++i){
-				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
-			}
-
-			for(int i=0 ; i<nbRows_ ; ++i)
-				for(int j=0 ; j<nbCols_ ; ++j)
-					values_[i][j] = m.values_[i][j] ;
-		}*/
 
 		// We never know if this matrix is used in the MatrixExpression, which could be problematic due to possible matrix multiplications
 		template <typename E>
 		void operator=(const MatrixExpression<E,T>& me) {
-			/*if(values_ != nullptr)
-				delete[] (*values_) ;
-			delete[] (values_) ;
-			
-			nbRows_ = me.nbRows() ;
-			nbCols_ = me.nbCols() ;
-			
-			values_ = new T*[nbRows_] ; 
-			
-			int size = nbRows_*nbCols_ ;
-			*values_ = new T[size] ;
-			
-			for(int i=1 ; i<nbRows_ ; ++i){
-				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
-			}
-
-			for(int i=0 ; i<nbRows_ ; ++i)
-				for(int j=0 ; j<nbCols_ ; ++j)
-					values_[i][j] = me(i,j) ;*/
-
 			*this = Matrix<T>(me) ;
 		}
 
@@ -159,15 +100,15 @@ namespace linalg {
 			if(values_ != nullptr)
 				delete[] (*values_) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = m.nbRows() ;
 			nbCols_ = m.nbCols() ;
-			
-			values_ = new T*[nbRows_] ; 
-			
+
+			values_ = new T*[nbRows_] ;
+
 			int size = nbRows_*nbCols_ ;
 			*values_ = new T[size] ;
-			
+
 			for(int i=1 ; i<nbRows_ ; ++i){
 				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
 			}
@@ -181,10 +122,10 @@ namespace linalg {
 			if(values_ != nullptr)
 				delete[] (*values_) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = m.nbRows_ ;
 			nbCols_ = m.nbCols_ ;
-			values_ = m.values_ ; 
+			values_ = m.values_ ;
 
 			m.values_ = nullptr ;
 		}
@@ -193,15 +134,15 @@ namespace linalg {
 			if(values_ != nullptr)
 				delete[] (*values_) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = v.nbRows() ;
 			nbCols_ = v.nbCols() ;
-			
-			values_ = new T*[nbRows_] ; 
-			
+
+			values_ = new T*[nbRows_] ;
+
 			int size = nbRows_*nbCols_ ;
 			*values_ = new T[size] ;
-			
+
 			for(int i=1 ; i<nbRows_ ; ++i){
 				*(values_+i) = *(values_+(i-1)) + nbCols_ ;
 			}
@@ -215,16 +156,44 @@ namespace linalg {
 			if(values_ != nullptr)
 				delete[] (*values_) ;
 			delete[] (values_) ;
-			
+
 			nbRows_ = v.nbRows_ ;
 			nbCols_ = v.nbCols_ ;
 
 			values_ = new T*[nbRows_] ;
-			*values_ = v.values_ ; 
+			*values_ = v.values_ ;
 			v.values_ = nullptr ;
 			for(int i=1 ; i<nbRows_ ; ++i){
 				*(values_+i) = *(values_+(i-1)) + 1 ;
 			}
+		}
+
+		Matrix& operator+=(const Matrix& m) {
+		    assert(nbRows_ == m.nbRows()) ;
+		    assert(nbCols_ == m.nbCols()) ;
+		    for(int i=0 ; i<nbRows_ ; ++i)
+				for(int j=0 ; j<nbCols_ ; ++j)
+					values_[i][j] += m(i,j) ;
+			return *this ;
+		}
+
+		template <typename E>
+		Matrix& operator+=(const MatrixExpression<E,T>& me) {
+			return *this += Matrix<T>(me) ;
+		}
+
+		Matrix& operator-=(const Matrix& m) {
+		    assert(nbRows_ == m.nbRows()) ;
+		    assert(nbCols_ == m.nbCols()) ;
+		    for(int i=0 ; i<nbRows_ ; ++i)
+				for(int j=0 ; j<nbCols_ ; ++j)
+					values_[i][j] -= m(i,j) ;
+			return *this ;
+		}
+
+		template <typename E>
+		Matrix& operator-=(const MatrixExpression<E,T>& me) {
+			return *this -= Matrix<T>(me) ;
 		}
 
 		const T operator()(int row, int col) const {
